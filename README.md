@@ -44,9 +44,11 @@ Tanto o cliente podem enviar mensagens um ao outro, executar comandos e responde
 
 1. Instalar NodeJS: https://nodejs.org/en
 2. No terminal, instalar dependências rodando `npm install` na pasta raiz do projeto
-3. Com as dependências instaladas, rodar 
+3. Com as dependências instaladas, rodar
     3.1. `npm run start` - roda os servidores http e ws
-    3.2. ou `npm run dev` - roda os servidores http e ws, reiniciando automaticamente a cada alteração feita nos arquivos
+    3.2. ou `npm run build` e depois `npm run dev` - roda os servidores http e ws, reiniciando automaticamente a cada alteração feita nos arquivos
+         o comando de build faz o bundle dos arquivos, resolve dependências dos arquivos js, faz uma minificação do script, etc, e disponibiliza na pasta
+         `/dist`
 
 ## Estrutura
 
