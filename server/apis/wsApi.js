@@ -1,7 +1,7 @@
 import { WebSocketServer } from "ws";
 
 const run = (port) => {
-    const wss = new WebSocketServer({ port: WS_PORT });
+    const wss = new WebSocketServer({ port });
     
     wss.on("connection", (ws) => {
         ws.on('message', (message) => {
