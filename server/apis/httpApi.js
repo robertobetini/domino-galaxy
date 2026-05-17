@@ -1,6 +1,8 @@
-import express from 'express';
+import express from "express";
+import { resolve } from "node:path";
 
 const HTTP_PORT = 8080;
+const options = { root: resolve("dist") }
 
 const run = () => {
   const app = express();
@@ -8,11 +10,11 @@ const run = () => {
   app.use(express.static("dist"));
 
   app.get("/", (req, res) => {
-    res.redirect("/index.html");
+    res.sendFile("index.html", options);
   });
 
   app.get("/rooms/:id", (req, res) => {
-    res.redirect("/room.html");
+    res.sendFile("room.html", options);
   });
 
   app.post("/rooms", (req, res) => {

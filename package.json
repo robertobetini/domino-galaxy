@@ -9,7 +9,8 @@
   "scripts": {
     "build": "vite build",
     "dev": "nodemon server/app.js",
-    "start": "npm run build && node server/app.js"
+    "start": "npm run build && node server/app.js",
+    "test": "node --test"
   },
   "dependencies": {
     "express": "^5.2.1",
