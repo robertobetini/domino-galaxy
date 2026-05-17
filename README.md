@@ -10,17 +10,21 @@ HTTP você provavelmente já conhece um pouco, mas WS provavelmente nunca viu
 Resumindo bem, WebSocket é um tipo de protocolo de comunicação baseado em client-servidor, mas diferente do HTTP, ele permite que os servidores também enviem "requisições" aos clientes.
 
 HTTP:
+
+```
 +----------+                   +----------+
 |          | ---requisição---> |          |
 | Cliente  |                   | Servidor |
 |          | <----resposta---- |          |
 +----------+                   +----------+
+```
 
 O cliente envia um "comando" e o servidor executa e responde.
 O servidor nunca vai enviar um comando para o cliente, somente executar o que o cliente pediu.
 
 WS:
 
+```
 +----------+                   +----------+
 |          | ----mensagem----> |          |
 | Cliente  |                   | Servidor |
@@ -32,6 +36,7 @@ WS:
 | Servidor |                   | Cliente  |
 |          | <----resposta---- |          |
 +----------+                   +----------+
+```
 
 Tanto o cliente podem enviar mensagens um ao outro, executar comandos e responder, é como se fosse uma conversa.
 
