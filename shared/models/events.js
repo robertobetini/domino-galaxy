@@ -33,7 +33,7 @@ class EventTypes {
 }
 
 class GameEvent {
-    constructor({roomId, type, id=0, content="", timestamp=Date.now() }) {
+    constructor({ roomId, type, id=0, content="", timestamp=Date.now() }) {
         this.id = id;
         this.roomId = roomId;
         this.timestamp = timestamp;
