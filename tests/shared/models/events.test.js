@@ -50,7 +50,6 @@ describe("GameEvent", () => {
         };
 
         let event = new GameEvent(eventInfo);
-        console.log(event.id);
 
         assert.strictEqual(event.id > 0, true);
     });

@@ -1,8 +1,8 @@
-const randomNumber = ({ min, max }) => {
-    if (min === undefined) {
+const randomNumber = ({ min=undefined, max=undefined }) => {
+    if (min === undefined || min === null) {
         min = 0;
     }
-    if (max === undefined) {
+    if (max === undefined || max === null) {
         max = Number.MAX_SAFE_INTEGER;
     }
 
