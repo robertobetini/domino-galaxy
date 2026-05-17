@@ -5,11 +5,14 @@ const HTTP_PORT = 8080;
 const run = () => {
   const app = express();
 
-  app.use(express.static("public"));
-  app.use("/shared", express.static("shared"));
+  app.use(express.static("dist"));
 
   app.get("/", (req, res) => {
     res.redirect("/index.html");
+  });
+
+  app.get("/rooms/:id", (req, res) => {
+    res.redirect("/room.html");
   });
 
   app.post("/rooms", (req, res) => {

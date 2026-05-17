@@ -1,21 +1,22 @@
 {
   "name": "domino-galaxy",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Servidor e client para o jogo de dominó do Rogue Galaxy.",
   "license": "ISC",
   "author": "Roberto Betini e Samuel Gonçalves",
   "type": "module",
-  "main": "index.js",
+  "main": "server/app.js",
   "scripts": {
+    "build": "vite build",
     "dev": "nodemon server/app.js",
-    "start": "node server/app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "npm run build && node server/app.js"
   },
   "dependencies": {
     "express": "^5.2.1",
     "ws": "^8.20.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "vite": "^8.0.13"
   }
 }
