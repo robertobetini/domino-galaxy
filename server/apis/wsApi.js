@@ -1,8 +1,6 @@
 import { WebSocketServer } from "ws";
 
-const WS_PORT = 8081
-
-const run = () => {
+const run = (port) => {
     const wss = new WebSocketServer({ port: WS_PORT });
     
     wss.on("connection", (ws) => {
@@ -13,7 +11,7 @@ const run = () => {
         ws.on('close', () => console.log('Client disconnected'));
     });
 
-    console.log(`WebSocket app listening on ws://localhost:${WS_PORT}`);
+    console.log(`WebSocket app listening on ws://localhost:${port}`);
 }
 
 export default { run };
