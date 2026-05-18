@@ -1,14 +1,7 @@
 <html>
     <head>
         <link rel="stylesheet" href="styles.css">
-        <style>
-            .botoes{
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                height: 100vh;
-            }
-        </style>
+        
     </head>
     <body>
         <div class="botoes">
@@ -16,16 +9,19 @@
             <button id="botao-join">
                 Join Game
             </button>
-
+            
             <button id="botao-select">
                 Select Game
             </button>
-
+            
             <button id="botao-criar-sala">
                 Create Room
             </button>
-
+            
         </div>
+        <form class="barra-join-game-escondido" id="barra-join-game">
+            <input type="juntar-game" id="barra-juntar" placeholder="input game join code">
+        </form>
         
         <script type="module" src="index.js">
             
