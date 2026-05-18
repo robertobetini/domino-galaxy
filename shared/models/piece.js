@@ -32,7 +32,7 @@ class Pieces {
     static PIECE_6_6 = 0x1c;
 
     static isValid(piece) {
-        if (!piece instanceof Number) {
+        if (!piece instanceof number) {
             return false;
         }
 

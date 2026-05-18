@@ -5,14 +5,36 @@ import utils from "../../shared/utils.js";
 import { GameEvent, EventTypes } from "../../shared/models/events.js";
 import { BroadCastTypes } from "../models/result.js";
 
+import roomRepository from "../repositories/roomRepository.js";
+
 import defaultHandler from "../handlers/default.js";
 import playerJoinHandler from "../handlers/playerJoin.js";
+import specJoinHandler from "../handlers/specJoin.js";
+
+const MAX_MESSAGE_BYTE_LENGTH = 1024;
 
 const wsMap = new Map();
 const handlerMap = new Map([
     [EventTypes.UNKNOWN, defaultHandler],
-    [EventTypes.PLAYER_JOIN, playerJoinHandler]
+    [EventTypes.PLAYER_JOIN, playerJoinHandler],
+    [EventTypes.SPEC_JOIN, specJoinHandler]
 ]);
+
+const sendToRoom = (roomId, clients, response, sender=null) => {
+    const room = roomRepository.get(roomId);
+
+    for(const client of clients) {
+        const clientId = wsMap.get(client);
+        const clientIsInRoom = room.game.players.find(p => p.id == clientId) !== undefined 
+            || room.spectators.find(s => s.id == clientId) !== undefined;
+
+        if (client === sender || !clientIsInRoom) {
+            continue;
+        }
+
+        client.send(response);
+    }
+}
 
 const run = (port) => {
     const wss = new WebSocketServer({ port });
@@ -21,6 +43,11 @@ const run = (port) => {
         wsMap.set(ws, utils.randomNumber());
         
         ws.on('message', (message) => {
+            if (message.byteLength > MAX_MESSAGE_BYTE_LENGTH) {
+                ws.send("message exceeded max length");
+                return;
+            }
+
             const wsId = wsMap.get(ws);
             const decodedEvent = message.toString("utf-8");
             const event = GameEvent.fromString(decodedEvent);
@@ -36,20 +63,10 @@ const run = (port) => {
                     ws.send(response);
                     break;
                 case BroadCastTypes.ALL_BUT_SENDER:
-                    for(const client of wss.clients) {
-                        if (client == ws) {
-                            continue;
-                        }
-
-                        client.send(response);
-                    }
-
+                    sendToRoom(event.roomId, wss.clients, response, wsId);
                     break;
                 case BroadCastTypes.ALL:
-                    for(const client of wss.clients) {
-                        client.send(response);
-                    }
-
+                    sendToRoom(event.roomId, wss.clients, response);
                     break;
                 case BroadCastTypes.NO_RESPONSE:
                 default: break;
@@ -63,6 +80,7 @@ const run = (port) => {
     });
 
     console.log(`WebSocket app listening on ws://localhost:${port}`);
+    return wss;
 }
 
 export default { run };

@@ -20,10 +20,19 @@ class Room {
     }
 
     addPlayer(player) {
-        return this.game.addPlayer(player);
+        const isSuccess = this.game.addPlayer(player);
+        if (isSuccess && this.owner === null) {
+            this.owner = player.id;
+        }
+
+        return isSuccess;
     }
 
     addSpectator(spectator) {
+        if (this.spectators.find(s => s.id == spectator.id)) {
+            return false;
+        }
+
         if (this.spectators.length < MAX_SPECTATORS) {
             this.spectators.push(spectator);
             return true;

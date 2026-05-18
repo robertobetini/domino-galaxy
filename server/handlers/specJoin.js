@@ -1,15 +1,15 @@
 import { EventTypes, GameEvent } from "../../shared/models/events.js";
-import { Player } from "../models/player.js";
+import { Spectator } from "../models/spectator.js";
 import { Result, BroadCastTypes } from "../models/result.js";
 
 import roomRepository from "../repositories/roomRepository.js";
 
 const handler = (event, wsId) => {
-    const player = new Player({ id: wsId });
+    const spec = new Spectator({ id: wsId });
     let response = new GameEvent({
         roomId: event.roomId,
         type: EventTypes.ROOM_JOINED,
-        content: player.id
+        content: spec.id
     });
 
     const room = roomRepository.get(event.roomId);
@@ -20,17 +20,17 @@ const handler = (event, wsId) => {
             content: `room ${event.roomId} does not exist`
         });
 
-        return new Result(response, BroadCastTypes.SENDER_ONLY);;
+        return new Result(response, BroadCastTypes.SENDER_ONLY);
     }
 
-    const isSuccess = room.addPlayer(player);
+    const isSuccess = room.addSpectator(spec);
     if (!isSuccess) {
         response = new GameEvent({
             roomId: event.roomId,
             type: EventTypes.SERVER_ERROR,
-            content: `player already joined room ${event.roomId}`
+            content: `spectator already joined room ${event.roomId}`
         });
-
+        
         return new Result(response, BroadCastTypes.SENDER_ONLY);
     }
 
