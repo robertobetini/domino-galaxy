@@ -1,4 +1,4 @@
-const randomNumber = ({ min=undefined, max=undefined }) => {
+const randomNumber = ({ min=undefined, max=undefined } = {}) => {
     if (min === undefined || min === null) {
         min = 0;
     }

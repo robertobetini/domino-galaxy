@@ -1,6 +1,10 @@
 import express from "express";
 import { resolve } from "node:path";
 
+import { Room } from "../../shared/models/room.js";
+
+import roomRepository from "../repositories/roomRepository.js";
+
 const options = { root: resolve("dist") }
 
 const run = (port) => {
@@ -17,7 +21,9 @@ const run = (port) => {
   });
 
   app.post("/rooms", (req, res) => {
-    res.status(201).send("ROOM_CREATED");
+    const room = new Room();
+    roomRepository.insert(room);
+    res.status(201).send(room.id);
   });
 
   app.listen(port, () => {

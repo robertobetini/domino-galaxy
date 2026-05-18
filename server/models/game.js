@@ -7,6 +7,10 @@ class Game {
     }
 
     addPlayer(player) {
+        if (this.players.find(p => p.id == player.id)) {
+            return false;
+        }
+        
         if (this.players.length < MAX_PLAYERS) {
             this.players.push(player);
             return true;
