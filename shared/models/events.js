@@ -40,8 +40,11 @@ class GameEvent {
         this.type = type;
         this.content = content;
 
-        if (id === 0) {
-            id = utils.randomNumber();
+        if (this.id == 0) {
+            this.id = utils.randomNumber();
+        }
+        if (this.type < EventTypes.PLAYER_JOIN || this.type > EventTypes.SERVER_ERROR) {
+            this.type = EventTypes.UNKNOWN;
         }
     }
 
@@ -53,11 +56,11 @@ class GameEvent {
         const [ id, roomId, timestamp, type, content ] = eventString.split("|");
 
         return new GameEvent({
-            id: new Number(id),
-            roomId: new Number(roomId),
-            timestamp: new Number(timestamp),
-            type: new Number(type),
-            content: content, 
+            id: parseInt(id, 10),
+            roomId: parseInt(roomId),
+            timestamp: parseInt(timestamp),
+            type: parseInt(type),
+            content: content,
         });
     }
 }
