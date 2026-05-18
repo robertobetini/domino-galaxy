@@ -4,5 +4,5 @@ import wsApi from "./apis/wsApi.js";
 const HTTP_PORT = 8080;
 const WS_PORT = 8081;
 
-httpApi.run(HTTP_PORT);
-wsApi.run(WS_PORT);
+const httpServer = httpApi.run(HTTP_PORT);
+const wss = wsApi.run(WS_PORT);

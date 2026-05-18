@@ -26,7 +26,7 @@ const run = (port) => {
     res.status(201).send(room.id);
   });
 
-  app.listen(port, () => {
+  return app.listen(port, () => {
     console.log(`Express app listening on http://localhost:${port}`);
   });
 }
