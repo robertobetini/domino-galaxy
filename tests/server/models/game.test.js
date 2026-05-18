@@ -24,7 +24,7 @@ describe("Game", () => {
 
         assert.strictEqual(firstAttempt, true);
         assert.strictEqual(secondAttempt, false);
-        assert.strictEqual(game.players.length === 1, true);
+        assert.strictEqual(game.players.length, 1);
         assert.strictEqual(game.players[0], player);
     });
 });
