@@ -9,13 +9,15 @@ import roomRepository from "../repositories/roomRepository.js";
 
 import defaultHandler from "../handlers/default.js";
 import playerJoinHandler from "../handlers/playerJoin.js";
+import specJoinHandler from "../handlers/specJoin.js";
 
 const MAX_MESSAGE_BYTE_LENGTH = 1024;
 
 const wsMap = new Map();
 const handlerMap = new Map([
     [EventTypes.UNKNOWN, defaultHandler],
-    [EventTypes.PLAYER_JOIN, playerJoinHandler]
+    [EventTypes.PLAYER_JOIN, playerJoinHandler],
+    [EventTypes.SPEC_JOIN, specJoinHandler]
 ]);
 
 const sendToRoom = (roomId, clients, response, sender=null) => {
@@ -23,7 +25,8 @@ const sendToRoom = (roomId, clients, response, sender=null) => {
 
     for(const client of clients) {
         const clientId = wsMap.get(client);
-        const clientIsInRoom = room.game.players.find(p => p.id == clientId) !== undefined;
+        const clientIsInRoom = room.game.players.find(p => p.id == clientId) !== undefined 
+            || room.spectators.find(s => s.id == clientId) !== undefined;
 
         if (client === sender || !clientIsInRoom) {
             continue;

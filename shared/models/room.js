@@ -29,6 +29,10 @@ class Room {
     }
 
     addSpectator(spectator) {
+        if (this.spectators.find(s => s.id == spectator.id)) {
+            return false;
+        }
+
         if (this.spectators.length < MAX_SPECTATORS) {
             this.spectators.push(spectator);
             return true;
