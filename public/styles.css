@@ -1,0 +1,13 @@
+
+.botoes{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+.barra-join-game-escondido{
+    display: none;
+}
+.barra-join-game-aberta{
+    display: block;
+}
