@@ -2,7 +2,7 @@ import utils from "../../shared/utils.js";
 import { Pieces } from "../../shared/models/piece.js";
 
 class Player {
-    constructor({ id=0, name="" }) {
+    constructor({ id=0, name="" } = {}) {
         this.id = id;
         this.name = name;
         this.hand = new Uint8Array(28);
@@ -27,3 +27,5 @@ class Player {
         }
     }
 }
+
+export { Player };

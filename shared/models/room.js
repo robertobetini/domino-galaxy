@@ -20,7 +20,7 @@ class Room {
     }
 
     addPlayer(player) {
-        return this.game.addPlayer();
+        return this.game.addPlayer(player);
     }
 
     addSpectator(spectator) {
