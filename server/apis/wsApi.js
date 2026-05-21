@@ -57,49 +57,45 @@ const validateAndHandle = (handler, event, wsId) => {
     return handler(event, wsId, room);
 }
 
+const handleMessage = (ws, message) => {
+    const wsId = wsMap.get(ws);
+    const decodedEvent = message.toString("utf-8");
+    const event = GameEvent.fromString(decodedEvent);
+    
+    console.log(`[CLIENT_EVENT] '${event.type}' : ${event}`);
+
+    const handler = handlerMap.get(event.type);
+    const result = validateAndHandle(handler, event, wsId);
+    const response = result?.response?.toString() ?? "";
+
+    console.log(`[SERVER_EVENT] ${result.response.type} (BC - ${result.broadcastType}): ${result.response}`);
+
+    if (result.shouldDisconnectClient) {
+        ws.close(1000);
+    }
+
+    switch (result.broadcastType) {
+        case BroadCastTypes.SENDER_ONLY: 
+            ws.send(response);
+            break;
+        case BroadCastTypes.ALL_BUT_SENDER:
+            sendToRoom(event.roomId, wss.clients, response, wsId);
+            break;
+        case BroadCastTypes.ALL:
+            sendToRoom(event.roomId, wss.clients, response);
+            break;
+        case BroadCastTypes.NO_RESPONSE:
+        default: break;
+    }
+}
+
 const run = (port) => {
     const wss = new WebSocketServer({ port });
     
     wss.on("connection", (ws) => {
         wsMap.set(ws, utils.randomNumber());
-        
-        ws.on("message", (message) => {
-            if (message.byteLength > MAX_MESSAGE_BYTE_LENGTH) {
-                ws.send("message exceeded max length");
-                return;
-            }
 
-            const wsId = wsMap.get(ws);
-            const decodedEvent = message.toString("utf-8");
-            const event = GameEvent.fromString(decodedEvent);
-            
-            console.log(`Received event of type '${event.type}' : ${event}`);
-
-            const handler = handlerMap.get(event.type);
-            const result = validateAndHandle(handler, event, wsId);
-            const response = result?.response?.toString() ?? "";
-
-            console.log(`Sending event of type ${result.response.type} (${result.broadcastType}): ${result.response}`);
-
-            if (result.shouldDisconnectClient) {
-                ws.close(1000);
-            }
-
-            switch (result.broadcastType) {
-                case BroadCastTypes.SENDER_ONLY: 
-                    ws.send(response);
-                    break;
-                case BroadCastTypes.ALL_BUT_SENDER:
-                    sendToRoom(event.roomId, wss.clients, response, wsId);
-                    break;
-                case BroadCastTypes.ALL:
-                    sendToRoom(event.roomId, wss.clients, response);
-                    break;
-                case BroadCastTypes.NO_RESPONSE:
-                default: break;
-            }
-        });
-        
+        ws.on("message", (message) => message.byteLength > MAX_MESSAGE_BYTE_LENGTH ? ws.send("message exceeded max length") : handleMessage(ws, message));
         ws.on("close", () => wsMap.delete(ws));
     });
 
