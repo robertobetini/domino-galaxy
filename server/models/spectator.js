@@ -1,3 +1,5 @@
+import utils from "../../shared/utils.js";
+
 class Spectator {
     constructor({ id=0, name="" } = {}) {
         this.id = id;

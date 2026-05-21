@@ -6,9 +6,10 @@ class BroadCastTypes {
 }
 
 class Result {
-    constructor(event, broadcastType) {
+    constructor(event, broadcastType, shouldDisconnectClient=false) {
         this.response = event;
-        this.broadcastType = broadcastType
+        this.broadcastType = broadcastType;
+        this.shouldDisconnectClient = shouldDisconnectClient;
     }
 }
 

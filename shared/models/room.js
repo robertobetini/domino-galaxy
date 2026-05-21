@@ -1,8 +1,6 @@
 import utils from "../utils.js";
 import { Game } from "../../server/models/game.js";
 
-const MAX_SPECTATORS = 20;
-
 class RoomStatus {
     static WAITING = 0;
     static ACTIVE = 1;
@@ -13,7 +11,6 @@ class Room {
     constructor() {
         this.id = utils.randomNumber();
         this.owner = null;
-        this.spectators = [];
         this.status = RoomStatus.WAITING;
         this.game = new Game();
         this.createdAt = Date.now();
@@ -28,17 +25,28 @@ class Room {
         return isSuccess;
     }
 
+    removePlayer(playerId) {
+        return this.game.removePlayer(playerId);
+    }
+
     addSpectator(spectator) {
-        if (this.spectators.find(s => s.id == spectator.id)) {
-            return false;
-        }
+        return this.game.addSpectator(spectator);
+    }
 
-        if (this.spectators.length < MAX_SPECTATORS) {
-            this.spectators.push(spectator);
-            return true;
-        }
+    removeSpectator(spectatorId) {
+        return this.game.removeSpectator(spectatorId);
+    }
 
-        return false;
+    playerIsInRoom(playerId) {
+        return this.game.players.findIndex(p => p.id == playerId) !== -1;
+    }
+
+    spectatorIsInRoom(spectatorId) {
+        return this.game.spectators.findIndex(p => p.id == spectatorId) !== -1;
+    }
+
+    entityIsInRoom(entityId) {
+        return this.playerIsInRoom(entityId) || this.spectatorIsInRoom(entityId);
     }
 
     startGame() {
@@ -55,4 +63,4 @@ class Room {
     }
 }
 
-export { MAX_SPECTATORS, Room, RoomStatus };
+export { Room, RoomStatus };

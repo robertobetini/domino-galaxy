@@ -4,12 +4,14 @@ import utils from "../../shared/utils.js";
 
 import { GameEvent, EventTypes } from "../../shared/models/events.js";
 import { BroadCastTypes } from "../models/result.js";
+import { Result } from "../models/result.js";
 
 import roomRepository from "../repositories/roomRepository.js";
 
 import defaultHandler from "../handlers/default.js";
-import playerJoinHandler from "../handlers/playerJoin.js";
-import specJoinHandler from "../handlers/specJoin.js";
+import { playerJoinHandler, spectatorJoinHandler } from "../handlers/join.js";
+import { playerLeaveHandler, spectatorLeaveHandler } from "../handlers/leave.js";
+import { playerCheckHandler, spectatorCheckHandler } from "../handlers/check.js";
 
 const MAX_MESSAGE_BYTE_LENGTH = 1024;
 
@@ -17,7 +19,11 @@ const wsMap = new Map();
 const handlerMap = new Map([
     [EventTypes.UNKNOWN, defaultHandler],
     [EventTypes.PLAYER_JOIN, playerJoinHandler],
-    [EventTypes.SPEC_JOIN, specJoinHandler]
+    [EventTypes.SPEC_JOIN, spectatorJoinHandler],
+    [EventTypes.PLAYER_LEAVE, playerLeaveHandler],
+    [EventTypes.SPEC_LEAVE, spectatorJoinHandler],
+    [EventTypes.CHECK_PLAYERS, playerCheckHandler],
+    [EventTypes.CHECK_SPECS, spectatorCheckHandler],
 ]);
 
 const sendToRoom = (roomId, clients, response, sender=null) => {
@@ -26,7 +32,7 @@ const sendToRoom = (roomId, clients, response, sender=null) => {
     for(const client of clients) {
         const clientId = wsMap.get(client);
         const clientIsInRoom = room.game.players.find(p => p.id == clientId) !== undefined 
-            || room.spectators.find(s => s.id == clientId) !== undefined;
+            || room.game.spectators.find(s => s.id == clientId) !== undefined;
 
         if (client === sender || !clientIsInRoom) {
             continue;
@@ -36,13 +42,28 @@ const sendToRoom = (roomId, clients, response, sender=null) => {
     }
 }
 
+const validateAndHandle = (handler, event, wsId) => {
+    const room = roomRepository.get(event.roomId);
+    if (!room) {
+        const response = new GameEvent({
+            roomId: event.roomId,
+            type: EventTypes.SERVER_ERROR,
+            content: `room does not exist`
+        });
+
+        return new Result(response, BroadCastTypes.SENDER_ONLY);
+    }
+
+    return handler(event, wsId, room);
+}
+
 const run = (port) => {
     const wss = new WebSocketServer({ port });
     
     wss.on("connection", (ws) => {
         wsMap.set(ws, utils.randomNumber());
         
-        ws.on('message', (message) => {
+        ws.on("message", (message) => {
             if (message.byteLength > MAX_MESSAGE_BYTE_LENGTH) {
                 ws.send("message exceeded max length");
                 return;
@@ -54,9 +75,15 @@ const run = (port) => {
             
             console.log(`Received event of type '${event.type}' : ${event}`);
 
-            const entry = handlerMap.get(event.type);
-            const result = entry?.handler(event, wsId);
+            const handler = handlerMap.get(event.type);
+            const result = validateAndHandle(handler, event, wsId);
             const response = result?.response?.toString() ?? "";
+
+            console.log(`Sending event of type ${result.response.type} (${result.broadcastType}): ${result.response}`);
+
+            if (result.shouldDisconnectClient) {
+                ws.close(1000);
+            }
 
             switch (result.broadcastType) {
                 case BroadCastTypes.SENDER_ONLY: 
@@ -73,10 +100,7 @@ const run = (port) => {
             }
         });
         
-        ws.on('close', () => {
-            console.log('Client disconnected');
-            wsMap.delete(ws);
-        });
+        ws.on("close", () => wsMap.delete(ws));
     });
 
     console.log(`WebSocket app listening on ws://localhost:${port}`);
