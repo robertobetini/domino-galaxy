@@ -36,7 +36,7 @@ class Pieces {
             return false;
         }
 
-        return piece > 0 && piece <= Pieces.PIECE_6_6
+        return piece > Pieces.EMPTY_SLOT && piece <= Pieces.PIECE_6_6
     }
 }
 

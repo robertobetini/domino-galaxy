@@ -3,13 +3,9 @@ import { Pieces } from "../../shared/models/piece.js";
 
 class Player {
     constructor({ id=0, name="" } = {}) {
-        this.id = id;
+        this.id = id == 0 ? utils.randomNumber() : id;
         this.name = name;
         this.hand = new Uint8Array(28);
-
-        if (this.id === 0) {
-            this.id = utils.randomNumber();
-        }
     }
 
     addPiece(newPiece) {
