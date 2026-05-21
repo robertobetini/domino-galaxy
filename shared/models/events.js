@@ -59,7 +59,7 @@ class GameEvent {
         const [ id, roomId, timestamp, type, content ] = eventString.split("|");
         
         return new GameEvent({
-            id: parseInt(id, 10),
+            id: parseInt(id),
             roomId: parseInt(roomId),
             timestamp: parseInt(timestamp),
             type: parseInt(type),
