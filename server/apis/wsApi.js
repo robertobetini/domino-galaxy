@@ -2,6 +2,8 @@ import { WebSocketServer } from "ws";
 
 import utils from "../../shared/utils.js";
 
+import { BiMap } from "../../shared/bimap.js";
+
 import { GameEvent, EventTypes } from "../../shared/models/events.js";
 import { BroadCastTypes } from "../models/result.js";
 import { Result } from "../models/result.js";
@@ -12,10 +14,11 @@ import defaultHandler from "../handlers/default.js";
 import { playerJoinHandler, spectatorJoinHandler } from "../handlers/join.js";
 import { playerLeaveHandler, spectatorLeaveHandler } from "../handlers/leave.js";
 import { playerCheckHandler, spectatorCheckHandler } from "../handlers/check.js";
+import { playerKickHandler, spectatorKickHandler } from "../handlers/kick.js";
 
 const MAX_MESSAGE_BYTE_LENGTH = 1024;
 
-const wsMap = new Map();
+const wsMap = new BiMap();
 const handlerMap = new Map([
     [EventTypes.UNKNOWN, defaultHandler],
     [EventTypes.PLAYER_JOIN, playerJoinHandler],
@@ -24,6 +27,8 @@ const handlerMap = new Map([
     [EventTypes.SPEC_LEAVE, spectatorJoinHandler],
     [EventTypes.CHECK_PLAYERS, playerCheckHandler],
     [EventTypes.CHECK_SPECS, spectatorCheckHandler],
+    [EventTypes.PLAYER_KICK, playerKickHandler],
+    [EventTypes.SPEC_KICK, spectatorKickHandler],
 ]);
 
 const sendToRoom = (roomId, clients, response, sender=null) => {
@@ -57,21 +62,22 @@ const validateAndHandle = (handler, event, wsId) => {
     return handler(event, wsId, room);
 }
 
-const handleMessage = (ws, message) => {
+const handleMessage = (wss, ws, message) => {
     const wsId = wsMap.get(ws);
     const decodedEvent = message.toString("utf-8");
     const event = GameEvent.fromString(decodedEvent);
     
     console.log(`[CLIENT_EVENT] '${event.type}' : ${event}`);
-
-    const handler = handlerMap.get(event.type);
+    
+    const handler = handlerMap.get(event.type) ?? defaultHandler;
     const result = validateAndHandle(handler, event, wsId);
     const response = result?.response?.toString() ?? "";
 
     console.log(`[SERVER_EVENT] ${result.response.type} (BC - ${result.broadcastType}): ${result.response}`);
 
-    if (result.shouldDisconnectClient) {
-        ws.close(1000);
+    if (result.clientToBeDisconnected) {
+        const wsToBeDisconnected = wsMap.revGet(result.clientToBeDisconnected);
+        wsToBeDisconnected?.close(1000);
     }
 
     switch (result.broadcastType) {
@@ -93,9 +99,10 @@ const run = (port) => {
     const wss = new WebSocketServer({ port });
     
     wss.on("connection", (ws) => {
-        wsMap.set(ws, utils.randomNumber());
+        const wsId = utils.randomNumber();
+        wsMap.set(ws, wsId);
 
-        ws.on("message", (message) => message.byteLength > MAX_MESSAGE_BYTE_LENGTH ? ws.send("message exceeded max length") : handleMessage(ws, message));
+        ws.on("message", (message) => message.byteLength > MAX_MESSAGE_BYTE_LENGTH ? ws.send("message exceeded max length") : handleMessage(wss, ws, message));
         ws.on("close", () => wsMap.delete(ws));
     });
 
