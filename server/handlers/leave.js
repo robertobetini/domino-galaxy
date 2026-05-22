@@ -16,7 +16,7 @@ const genericHandler = (event, wsId, room, isSpectator) => {
         response = new GameEvent({
             roomId: event.roomId,
             type: EventTypes.SERVER_ERROR,
-            content: `${ isSpectator ? "spectator" : "player" } not found`
+            content: "spectator/player not found"
         });
 
         return new Result(response, BroadCastTypes.SENDER_ONLY);

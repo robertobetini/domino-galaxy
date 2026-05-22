@@ -11,4 +11,4 @@ const handler = (event, wsId, room) => {
     return new Result(response, BroadCastTypes.SENDER_ONLY);
 }
 
-export default { handler };
+export default handler;
