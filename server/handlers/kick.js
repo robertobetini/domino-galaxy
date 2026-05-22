@@ -5,13 +5,13 @@ import { Result, BroadCastTypes } from "../models/result.js";
 import roomRepository from "../repositories/roomRepository.js";
 
 const genericHandler = (event, wsId, room, isSpectator) => {
+    const playerToKick = parseInt(event.content);
+    
     let response = new GameEvent({
         roomId: event.roomId,
         type: EventTypes.ROOM_LEFT,
-        content: wsId
+        content: playerToKick
     });
-
-    const playerToKick = event.content;
 
     if (playerToKick == room.owner) {
         response = new GameEvent({
@@ -44,7 +44,7 @@ const genericHandler = (event, wsId, room, isSpectator) => {
         return new Result(response, BroadCastTypes.SENDER_ONLY);
     }
 
-    return new Result(response, BroadCastTypes.ALL, true);
+    return new Result(response, BroadCastTypes.ALL, playerToKick);
 }
 
 const playerKickHandler = (event, wsId, room) => genericHandler(event, wsId, room, false);

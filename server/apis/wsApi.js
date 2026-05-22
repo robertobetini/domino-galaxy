@@ -2,6 +2,8 @@ import { WebSocketServer } from "ws";
 
 import utils from "../../shared/utils.js";
 
+import { BiMap } from "../../shared/bimap.js";
+
 import { GameEvent, EventTypes } from "../../shared/models/events.js";
 import { BroadCastTypes } from "../models/result.js";
 import { Result } from "../models/result.js";
@@ -16,7 +18,7 @@ import { playerKickHandler, spectatorKickHandler } from "../handlers/kick.js";
 
 const MAX_MESSAGE_BYTE_LENGTH = 1024;
 
-const wsMap = new Map();
+const wsMap = new BiMap();
 const handlerMap = new Map([
     [EventTypes.UNKNOWN, defaultHandler],
     [EventTypes.PLAYER_JOIN, playerJoinHandler],
@@ -73,8 +75,9 @@ const handleMessage = (wss, ws, message) => {
 
     console.log(`[SERVER_EVENT] ${result.response.type} (BC - ${result.broadcastType}): ${result.response}`);
 
-    if (result.shouldDisconnectClient) {
-        ws.close(1000);
+    if (result.clientToBeDisconnected) {
+        const wsToBeDisconnected = wsMap.revGet(result.clientToBeDisconnected);
+        wsToBeDisconnected?.close(1000);
     }
 
     switch (result.broadcastType) {
@@ -96,7 +99,8 @@ const run = (port) => {
     const wss = new WebSocketServer({ port });
     
     wss.on("connection", (ws) => {
-        wsMap.set(ws, utils.randomNumber());
+        const wsId = utils.randomNumber();
+        wsMap.set(ws, wsId);
 
         ws.on("message", (message) => message.byteLength > MAX_MESSAGE_BYTE_LENGTH ? ws.send("message exceeded max length") : handleMessage(wss, ws, message));
         ws.on("close", () => wsMap.delete(ws));

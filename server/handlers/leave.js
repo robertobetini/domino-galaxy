@@ -22,7 +22,7 @@ const genericHandler = (event, wsId, room, isSpectator) => {
         return new Result(response, BroadCastTypes.SENDER_ONLY);
     }
 
-    return new Result(response, BroadCastTypes.ALL, true);
+    return new Result(response, BroadCastTypes.ALL, wsId);
 }
 
 const playerLeaveHandler = (event, wsId, room) => genericHandler(event, wsId, room, false);
