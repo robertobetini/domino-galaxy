@@ -9,7 +9,7 @@ class Game {
     }
 
     addPlayer(player) {
-        if (this.players.find(p => p.id == player.id)) {
+        if (this.entityIsInRoom(player.id)) {
             return false;
         }
         
@@ -32,7 +32,7 @@ class Game {
     }
 
     addSpectator(spectator) {
-        if (this.spectators.find(s => s.id == spectator.id)) {
+        if (this.entityIsInRoom(spectator.id)) {
             return false;
         }
 
@@ -45,13 +45,25 @@ class Game {
     }
 
     removeSpectator(spectatorId) {
-        const index = this.spectators.findIndex(s => s.id == spectatorId);
+        const index = this.spectators.findIndex(p => p.id == spectatorId);
         if (index === -1) {
             return false;
         }
         
         this.spectators.splice(index, 1);
         return true;
+    }
+
+    playerIsInRoom(playerId) {
+        return this.players.findIndex(p => p.id == playerId) !== -1;
+    }
+
+    spectatorIsInRoom(spectatorId) {
+        return this.spectators.findIndex(p => p.id == spectatorId) !== -1;
+    }
+
+    entityIsInRoom(entityId) {
+        return this.playerIsInRoom(entityId) || this.spectatorIsInRoom(entityId);
     }
 }
 
