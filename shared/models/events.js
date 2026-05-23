@@ -15,7 +15,7 @@ class EventTypes {
     static PIECE_INSERT = 9;
     static SYNC = 10;
     static SEND_MESSAGE = 11;
-    static IDLE_CHECK = 12;
+    static IDLE_CHECK_RESPONSE = 12;
     static CLIENT_ACK = 13;
     static CLIENT_ERROR = 14;
     static CHECK_PLAYERS = 15;
