@@ -10,17 +10,15 @@ const botao_leave_room =  document.querySelector('#botao-leave')
 const id_da_sala =  window.location.pathname.split('/')[2]
 let resposta_do_servidor
 
+const soquete = new WebSocket(`ws://${window.location.hostname}:8081/`)
 
-const soquete = new WebSocket("ws://localhost:8081/")
+soquete.addEventListener("open", () => {
+    soquete.addEventListener("message", (message) => {
+        const evento = GameEvent.fromString(message.data)
+        resposta_do_servidor = evento
 
-    soquete.addEventListener("open", () => {
-        soquete.addEventListener("message", (message) => {
-            const evento = GameEvent.fromString(message.data)
-            resposta_do_servidor = evento
-
-        });
-
-    })
+    });
+})
     
     
 
