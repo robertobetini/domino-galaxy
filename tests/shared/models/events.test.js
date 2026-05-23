@@ -1,14 +1,14 @@
 import { describe, it } from "node:test";
 import assert from "node:assert";
 
-import { GameEvent, EventTypes } from "../../../shared/models/events.js";
+import { GameEvent, EventType } from "../../../shared/models/events.js";
 
 describe("GameEvent", () => {
     it("valid information should be ok", (t) => {
         const eventInfo = {
             id: 1,
             roomId: 1,
-            type: EventTypes.PLAYER_JOIN,
+            type: EventType.PLAYER_JOIN,
             content: "event content",
             timestamp: 1_000_000
         };
@@ -20,7 +20,7 @@ describe("GameEvent", () => {
         const eventInfo = {
             id: 1,
             roomId: 1,
-            type: EventTypes.PLAYER_JOIN,
+            type: EventType.PLAYER_JOIN,
             timestamp: 1_000_000
         };
 
@@ -31,7 +31,7 @@ describe("GameEvent", () => {
         const eventInfo = {
             id: 1,
             roomId: 1,
-            type: EventTypes.PLAYER_JOIN,
+            type: EventType.PLAYER_JOIN,
             content: "event content"
         };
 
@@ -44,7 +44,7 @@ describe("GameEvent", () => {
     it("empty id should be ok", (t) => {
         const eventInfo = {
             roomId: 1,
-            type: EventTypes.PLAYER_JOIN,
+            type: EventType.PLAYER_JOIN,
             content: "event content"
         };
 
@@ -63,7 +63,7 @@ describe("GameEvent", () => {
             };
             let event = new GameEvent(eventInfo);
 
-            assert.strictEqual(event.type, EventTypes.UNKNOWN);
+            assert.strictEqual(event.type, EventType.UNKNOWN);
         }
     });
 
@@ -72,7 +72,7 @@ describe("GameEvent", () => {
             id: 100,
             roomId: 200,
             timestamp: Date.now(),
-            type: EventTypes.SERVER_ACK,
+            type: EventType.SERVER_ACK,
             content: "event content"
         };
 

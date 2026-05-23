@@ -1,6 +1,6 @@
 import utils from "../utils.js";
 
-class EventTypes {
+class EventType {
     static UNKNOWN = 0;
 
     // client events
@@ -31,14 +31,14 @@ class EventTypes {
     static NEW_MESSAGE = 107;
     static IDLE_CHECK = 108;
     static SERVER_ACK = 109;
-    static SERVER_ERROR = 110;
+    static ERROR = 110;
     static PLAYER_LIST = 111;
     static SPEC_LIST = 112;
 
-    static EVENT_TYPE_LIST = Object.keys(EventTypes).map(key => EventTypes[key]);
+    static ALL = Object.keys(EventType).map(key => EventType[key]);
 
     static resolve(type) {
-        return EventTypes.EVENT_TYPE_LIST.includes(type) ? type : EventTypes.UNKNOWN;
+        return EventType.ALL.includes(type) ? type : EventType.UNKNOWN;
     }
 }
 
@@ -47,7 +47,7 @@ class GameEvent {
         this.id = id == 0 ? utils.randomNumber() : id;
         this.roomId = roomId;
         this.timestamp = timestamp;
-        this.type = EventTypes.resolve(type);
+        this.type = EventType.resolve(type);
         this.content = content;
     }
 
@@ -68,4 +68,4 @@ class GameEvent {
     }
 }
 
-export { EventTypes, GameEvent };
+export { EventType, GameEvent };

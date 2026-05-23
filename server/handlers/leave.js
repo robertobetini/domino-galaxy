@@ -1,13 +1,13 @@
-import { EventTypes, GameEvent } from "../../shared/models/events.js";
+import { EventType, GameEvent } from "../../shared/models/events.js";
 import { Player } from "../models/player.js";
-import { Result, BroadCastTypes } from "../models/result.js";
+import { Result, BroadCastType } from "../models/result.js";
 
 import roomRepository from "../repositories/roomRepository.js";
 
 const genericHandler = (event, wsId, room, isSpectator) => {
     let response = new GameEvent({
         roomId: event.roomId,
-        type: EventTypes.ROOM_LEFT,
+        type: EventType.ROOM_LEFT,
         content: wsId
     });
 
@@ -15,14 +15,14 @@ const genericHandler = (event, wsId, room, isSpectator) => {
     if (!isSuccess) {
         response = new GameEvent({
             roomId: event.roomId,
-            type: EventTypes.SERVER_ERROR,
+            type: EventType.ERROR,
             content: "spectator/player not found"
         });
 
-        return new Result(response, BroadCastTypes.SENDER_ONLY);
+        return new Result(response, BroadCastType.SENDER_ONLY);
     }
 
-    return new Result(response, BroadCastTypes.ALL, wsId);
+    return new Result(response, BroadCastType.ALL, wsId);
 }
 
 const playerLeaveHandler = (event, wsId, room) => genericHandler(event, wsId, room, false);
