@@ -12,28 +12,30 @@ class EventType {
     static SPEC_LEAVE = 6;
     static SPEC_KICK = 7;
     static SPEC_BAN = 8;
-    static PIECE_INSERT = 9;
-    static SYNC = 10;
-    static SEND_MESSAGE = 11;
-    static IDLE_CHECK_RESPONSE = 12;
-    static CLIENT_ACK = 13;
-    static CLIENT_ERROR = 14;
-    static CHECK_PLAYERS = 15;
-    static CHECK_SPECS = 16;
+    static START_GAME = 9;
+    static PIECE_INSERT = 10;
+    static SYNC = 11;
+    static SEND_MESSAGE = 12;
+    static IDLE_CHECK_RESPONSE = 13;
+    static CLIENT_ACK = 14;
+    static CLIENT_ERROR = 15;
+    static CHECK_PLAYERS = 16;
+    static CHECK_SPECS = 17;
 
     // server events
     static ROOM_JOINED = 101;
     static ROOM_LEFT = 102;
-    static GAME_STATUS = 103;
-    static GAME_TURN_FINISHED = 104;
-    static GAME_FINISHED = 105;
-    static ACTION_DENIED = 106;
-    static NEW_MESSAGE = 107;
-    static IDLE_CHECK = 108;
-    static SERVER_ACK = 109;
-    static ERROR = 110;
-    static PLAYER_LIST = 111;
-    static SPEC_LIST = 112;
+    static GAME_STARTED = 103;
+    static GAME_STATUS = 104;
+    static GAME_TURN_FINISHED = 105;
+    static GAME_FINISHED = 106;
+    static ACTION_DENIED = 107;
+    static NEW_MESSAGE = 108;
+    static IDLE_CHECK = 109;
+    static SERVER_ACK = 110;
+    static ERROR = 111;
+    static PLAYER_LIST = 112;
+    static SPEC_LIST = 113;
 
     static ALL = Object.keys(EventType).map(key => EventType[key]);
 

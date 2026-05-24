@@ -1,11 +1,16 @@
+import utils from "../../shared/utils.js";
+import { Pieces } from "../../shared/models/piece.js";
+
 const MAX_PLAYERS = 4;
 const MAX_SPECTATORS = 20;
+const INIT_HAND_SIZE = 7;
 
 class Game {
     constructor() {
         this.players = [];
         this.spectators = [];
         this.board = new Uint8Array();
+        this.pile = new Uint8Array();
     }
 
     addPlayer(player) {
@@ -64,6 +69,17 @@ class Game {
 
     entityIsInRoom(entityId) {
         return this.playerIsInRoom(entityId) || this.spectatorIsInRoom(entityId);
+    }
+
+    init() {
+        const shuffledPieces = utils.shuffle(Pieces.ALL, { iterations: 250 });
+
+        for (let i = 0; i < this.players.length; i++) {
+            const player = this.players[i];
+            player.hand = new Uint8Array(shuffledPieces.slice(INIT_HAND_SIZE * i, INIT_HAND_SIZE * (i + 1)));
+        }
+
+        this.pile = new Uint8Array(shuffledPieces.slice(INIT_HAND_SIZE * this.players.length));
     }
 }
 

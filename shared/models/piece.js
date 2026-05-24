@@ -31,6 +31,11 @@ class Pieces {
     static PIECE_5_6 = 0x1b;
     static PIECE_6_6 = 0x1c;
 
+    static ALL = Object
+        .keys(Pieces)
+        .map(key => Pieces[key])
+        .filter(p => p !== Pieces.EMPTY_SLOT);
+
     static isValid(piece) {
         if (!piece instanceof number) {
             return false;
