@@ -26,6 +26,16 @@ const genericHandler = (event, wsId, room, isSpectator) => {
         return new Result(response, BroadCastType.SENDER_ONLY);
     }
 
+    if (isSpectator) {
+        response.content += ",spec";
+    }
+    else if (room.owner == wsId) {
+        response.content += ",owner";
+    }
+    else {
+        response.content += ",player";
+    }
+
     return new Result(response, BroadCastType.ALL);
 }
 
