@@ -97,4 +97,18 @@ describe("Game", () => {
         assert.strictEqual(spectatorRemovedWithSuccess, false);
         assert.strictEqual(game.spectators.length, 1);
     });
+
+    it("init should be ok", (t) => {
+        const game = new Game();
+        const player1 = new Player({ id: 1 });
+        const player2 = new Player({ id: 2 });
+
+        game.addPlayer(player1);
+        game.addPlayer(player2);
+        
+        game.init();
+
+        assert.strictEqual(player1.hand.length, 7);
+        assert.strictEqual(player2.hand.length, 7);
+    });
 });

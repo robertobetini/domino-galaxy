@@ -5,7 +5,7 @@ class Player {
     constructor({ id=0, name="" } = {}) {
         this.id = id == 0 ? utils.randomNumber() : id;
         this.name = name;
-        this.hand = new Uint8Array(28);
+        this.hand = new Uint8Array(22);
     }
 
     addPiece(newPiece) {
