@@ -4,8 +4,8 @@ import utils from "../../shared/utils.js";
 
 import { BiMap } from "../../shared/bimap.js";
 
-import { GameEvent, EventTypes } from "../../shared/models/events.js";
-import { BroadCastTypes } from "../models/result.js";
+import { GameEvent, EventType } from "../../shared/models/events.js";
+import { BroadCastType } from "../models/result.js";
 import { Result } from "../models/result.js";
 
 import roomRepository from "../repositories/roomRepository.js";
@@ -20,15 +20,15 @@ const MAX_MESSAGE_BYTE_LENGTH = 1024;
 
 const wsMap = new BiMap();
 const handlerMap = new Map([
-    [EventTypes.UNKNOWN, defaultHandler],
-    [EventTypes.PLAYER_JOIN, playerJoinHandler],
-    [EventTypes.SPEC_JOIN, spectatorJoinHandler],
-    [EventTypes.PLAYER_LEAVE, playerLeaveHandler],
-    [EventTypes.SPEC_LEAVE, spectatorJoinHandler],
-    [EventTypes.CHECK_PLAYERS, playerCheckHandler],
-    [EventTypes.CHECK_SPECS, spectatorCheckHandler],
-    [EventTypes.PLAYER_KICK, playerKickHandler],
-    [EventTypes.SPEC_KICK, spectatorKickHandler],
+    [EventType.UNKNOWN, defaultHandler],
+    [EventType.PLAYER_JOIN, playerJoinHandler],
+    [EventType.SPEC_JOIN, spectatorJoinHandler],
+    [EventType.PLAYER_LEAVE, playerLeaveHandler],
+    [EventType.SPEC_LEAVE, spectatorJoinHandler],
+    [EventType.CHECK_PLAYERS, playerCheckHandler],
+    [EventType.CHECK_SPECS, spectatorCheckHandler],
+    [EventType.PLAYER_KICK, playerKickHandler],
+    [EventType.SPEC_KICK, spectatorKickHandler],
 ]);
 
 const sendToRoom = (roomId, clients, response, sender=null) => {
@@ -52,11 +52,11 @@ const validateAndHandle = (handler, event, wsId) => {
     if (!room) {
         const response = new GameEvent({
             roomId: event.roomId,
-            type: EventTypes.SERVER_ERROR,
+            type: EventType.ERROR,
             content: `room does not exist`
         });
 
-        return new Result(response, BroadCastTypes.SENDER_ONLY);
+        return new Result(response, BroadCastType.SENDER_ONLY);
     }
 
     return handler(event, wsId, room);
@@ -81,16 +81,16 @@ const handleMessage = (wss, ws, message) => {
     }
 
     switch (result.broadcastType) {
-        case BroadCastTypes.SENDER_ONLY: 
+        case BroadCastType.SENDER_ONLY: 
             ws.send(response);
             break;
-        case BroadCastTypes.ALL_BUT_SENDER:
+        case BroadCastType.ALL_BUT_SENDER:
             sendToRoom(event.roomId, wss.clients, response, wsId);
             break;
-        case BroadCastTypes.ALL:
+        case BroadCastType.ALL:
             sendToRoom(event.roomId, wss.clients, response);
             break;
-        case BroadCastTypes.NO_RESPONSE:
+        case BroadCastType.NO_RESPONSE:
         default: break;
     }
 }

@@ -1,4 +1,4 @@
-import { GameEvent, EventTypes} from "../shared/models/events.js";
+import { GameEvent, EventType} from "../shared/models/events.js";
 
 
 const botao_join_room = document.querySelector('#botao-join-room')
@@ -26,28 +26,28 @@ const soquete = new WebSocket("ws://localhost:8081/")
 
 botao_join_room.addEventListener('click', function () {
     console.log("Esse é o botão que o player vai dar join")
-    soquete.send(new GameEvent({roomId: id_da_sala, type: EventTypes.PLAYER_JOIN}).toString())
+    soquete.send(new GameEvent({roomId: id_da_sala, type: EventType.PLAYER_JOIN}).toString())
    
 });
 
 botao_spec_room.addEventListener('click', function () {
     console.log("Esse é o botão que o player vai assistir")
-    soquete.send(new GameEvent({roomId: id_da_sala, type: EventTypes.SPEC_JOIN}).toString())
+    soquete.send(new GameEvent({roomId: id_da_sala, type: EventType.SPEC_JOIN}).toString())
 });
 
 botao_kick_room.addEventListener('click', function() {
     console.log("Esse é o botão kick")
-    soquete.send(new GameEvent({roomId: id_da_sala, type: EventTypes.PLAYER_KICK}).toString())
+    soquete.send(new GameEvent({roomId: id_da_sala, type: EventType.PLAYER_KICK}).toString())
 });
 
 botao_ban_room.addEventListener('click', function(){
     console.log("Esse é o botão ban")
-    soquete.send(new GameEvent({roomId: id_da_sala, type: EventTypes.PLAYER_BAN}).toString())
+    soquete.send(new GameEvent({roomId: id_da_sala, type: EventType.PLAYER_BAN}).toString())
 })
 
 botao_leave_room.addEventListener('click', function(){
     console.log("Esse é o botão leave")
-    soquete.send(new GameEvent({roomId: id_da_sala, type: EventTypes.PLAYER_LEAVE}).toString())
+    soquete.send(new GameEvent({roomId: id_da_sala, type: EventType.PLAYER_LEAVE}).toString())
 })
 
 

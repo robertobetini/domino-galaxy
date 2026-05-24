@@ -1,6 +1,6 @@
-import { EventTypes, GameEvent } from "../../shared/models/events.js";
+import { EventType, GameEvent } from "../../shared/models/events.js";
 import { Player } from "../models/player.js";
-import { Result, BroadCastTypes } from "../models/result.js";
+import { Result, BroadCastType } from "../models/result.js";
 
 import roomRepository from "../repositories/roomRepository.js";
 
@@ -9,42 +9,42 @@ const genericHandler = (event, wsId, room, isSpectator) => {
     
     let response = new GameEvent({
         roomId: event.roomId,
-        type: EventTypes.ROOM_LEFT,
+        type: EventType.ROOM_LEFT,
         content: playerToKick
     });
 
     if (playerToKick == room.owner) {
         response = new GameEvent({
             roomId: event.roomId,
-            type: EventTypes.SERVER_ERROR,
+            type: EventType.ERROR,
             content: "cannot kick room owner"
         });
 
-        return new Result(response, BroadCastTypes.SENDER_ONLY);
+        return new Result(response, BroadCastType.SENDER_ONLY);
     }
 
     if (wsId != room.owner) {
         response = new GameEvent({
             roomId: event.roomId,
-            type: EventTypes.SERVER_ERROR,
+            type: EventType.ERROR,
             content: "kick is permitted only by room owner"
         });
 
-        return new Result(response, BroadCastTypes.SENDER_ONLY);
+        return new Result(response, BroadCastType.SENDER_ONLY);
     }
 
     const isSuccess = isSpectator ? room.removeSpectator(playerToKick) : room.removePlayer(playerToKick);
     if (!isSuccess) {
         response = new GameEvent({
             roomId: event.roomId,
-            type: EventTypes.SERVER_ERROR,
+            type: EventType.ERROR,
             content: "spectator/player not found"
         });
 
-        return new Result(response, BroadCastTypes.SENDER_ONLY);
+        return new Result(response, BroadCastType.SENDER_ONLY);
     }
 
-    return new Result(response, BroadCastTypes.ALL, playerToKick);
+    return new Result(response, BroadCastType.ALL, playerToKick);
 }
 
 const playerKickHandler = (event, wsId, room) => genericHandler(event, wsId, room, false);

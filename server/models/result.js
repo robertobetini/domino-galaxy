@@ -1,4 +1,4 @@
-class BroadCastTypes {
+class BroadCastType {
     static NO_RESPONSE = 0;
     static SENDER_ONLY = 1;
     static ALL_BUT_SENDER = 2;
@@ -13,4 +13,4 @@ class Result {
     }
 }
 
-export { Result, BroadCastTypes };
+export { Result, BroadCastType };
