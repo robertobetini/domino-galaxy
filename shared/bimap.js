@@ -24,22 +24,20 @@ class BiMap {
 
     delete(key) {
         const revKey = this.map.get(key);
-        if (!revKey) {
-            return;
+        if (revKey === undefined) {
+            return false;
         }
 
-        this.map.delete(key);
-        this.revMap.delete(revKey);
+        return this.map.delete(key) && this.revMap.delete(revKey);
     }
 
     revDelete(revKey) {
         const key = this.revMap.get(revKey);
-        if (!key) {
-            return;
+        if (key === undefined) {
+            return false;
         }
 
-        this.map.delete(key);
-        this.revMap.delete(revKey);
+        return this.map.delete(key) && this.revMap.delete(revKey);
     }
 }
 
