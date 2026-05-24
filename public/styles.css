@@ -1,13 +1,22 @@
 
 .botoes{
     display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
+    gap: 10px;
 }
 .barra-join-game-escondido{
     display: none;
+       
 }
 .barra-join-game-aberta{
-    display: block;
+    display: flex;
+    justify-content: center;
+  
+}
+.principal{
+    display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        gap: 20px;
 }
