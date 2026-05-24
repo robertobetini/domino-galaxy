@@ -23,9 +23,8 @@ botao_select_homepg.addEventListener('click', function () {
 
 botao_criarSala_homepg.addEventListener('click', async function () {
     //Aqui vc está apontando pra qual pagina o botao te leva
-    const fazer_postagem = await fetch("http://localhost:8080/rooms", {
+    const fazer_postagem = await fetch("/rooms", {
         method: "POST",
-        
     })
     
     if(fazer_postagem.status == 201){
