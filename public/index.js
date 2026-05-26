@@ -1,8 +1,7 @@
 
-const botao_join_homepg = document.querySelector('#botao-join')
-const botao_select_homepg =  document.querySelector('#botao-select')
-const botao_criarSala_homepg = document.querySelector('#botao-criar-sala')
-const barra_join_homepg = document.querySelector('#barra-join-game')
+const botao_join_homepg = document.getElementById('botao-join')
+const botao_criarSala_homepg = document.getElementById('botao-criar-sala')
+const barra_join_homepg = document.getElementById('barra-join-game')
 
 
 botao_join_homepg.addEventListener('click', function () {
@@ -15,10 +14,6 @@ botao_join_homepg.addEventListener('click', function () {
         barra_join_homepg.classList.add('barra-join-game-escondido')
     }
     console.log("Esse é o botão join")
-});
-
-botao_select_homepg.addEventListener('click', function () {
-    console.log("Esse é o botão select")
 });
 
 botao_criarSala_homepg.addEventListener('click', async function () {
