@@ -76,10 +76,10 @@ class Game {
 
         for (let i = 0; i < this.players.length; i++) {
             const player = this.players[i];
-            player.hand = new Uint8Array(shuffledPieces.slice(INIT_HAND_SIZE * i, INIT_HAND_SIZE * (i + 1)));
+            player.hand = new Uint8Array(shuffledPieces.slice(INIT_HAND_SIZE * i, INIT_HAND_SIZE * (i + 1)), 0, 22);
         }
 
-        this.pile = new Uint8Array(shuffledPieces.slice(INIT_HAND_SIZE * this.players.length));
+        this.pile = new Uint8Array(shuffledPieces.slice(INIT_HAND_SIZE * this.players.length), 0, 28);
     }
 }
 

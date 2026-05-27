@@ -5,6 +5,31 @@ import { Game } from "../../../server/models/game.js";
 import { Player } from "../../../server/models/player.js";
 import { Spectator } from "../../../server/models/spectator.js";
 
+const testInit = (totalPlayers) => {
+    const game = new Game();
+
+    for (let id = 1; id <= totalPlayers; id++) {
+        const player = new Player({ id });
+        game.addPlayer(player);    
+    }
+
+    game.init();
+
+    const pieceFreqs = {};
+    for (const player of game.players) {
+        assert.strictEqual(player.hand.length, 7);
+        for (const piece of player.hand) {
+            pieceFreqs[piece] = pieceFreqs[piece] ?? 0;
+            pieceFreqs[piece]++;
+        }
+    }
+
+    assert.strictEqual(game.pile.length, 28 - (7 * game.players.length));
+    
+    const repeatedPieces = Object.values(pieceFreqs).filter(value => value > 1);
+    assert.strictEqual(repeatedPieces.length, 0);
+}
+
 describe("Game", () => {
     it("insert new player should be ok", (t) => {
         const game = new Game();
@@ -98,17 +123,10 @@ describe("Game", () => {
         assert.strictEqual(game.spectators.length, 1);
     });
 
-    it("init should be ok", (t) => {
-        const game = new Game();
-        const player1 = new Player({ id: 1 });
-        const player2 = new Player({ id: 2 });
-
-        game.addPlayer(player1);
-        game.addPlayer(player2);
-        
-        game.init();
-
-        assert.strictEqual(player1.hand.length, 7);
-        assert.strictEqual(player2.hand.length, 7);
+    describe("init", () => {
+        it("with 1 player should be ok", (t) => testInit(1));
+        it("with 2 players should be ok", (t) => testInit(2));
+        it("with 3 players should be ok", (t) => testInit(3));
+        it("with 4 players should be ok", (t) => testInit(4));
     });
 });
